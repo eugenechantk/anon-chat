@@ -1,51 +1,37 @@
-import { io } from "socket.io-client";
+'use client'
 
-const socket = io("ws://localhost:3500");
-
-socket.on("connect", () => {
-  console.log("connected to server");
-  socket.send("hello from client");
-})
-
-socket.on("message", (message) => {
-  console.log("message received: " + message);
-})
-
-// socket.onopen = () => {
-//   console.log("connected to server");
-//   socket.send("hello from client");
-// };
-
-// socket.onmessage = (event) => {
-//   console.log("message received: " + event.data);
-// };
-
-async function handleSubmit(formData: FormData) {
-  "use server";
-  console.log("submitting form...");
-  const message = formData.get("message");
-  socket.emit(message ? message.toString() : "");
-  // Perform server-side operations with the message here
-  // console.log(message);
-}
+import { useCallback, useEffect, useState } from "react";
+import socket from "../socket";
 
 export default function Home() {
+  const [messages, setMessages] = useState("")
+
+  function handleSendMessage() {
+    console.log(`Sending message to server`);
+    socket.emit('message', messages);
+  }
+
+  useEffect(() => {
+    socket.on('message', (message) => {
+      console.log(`Received message from server: ${message}`);
+    });
+  }, [])
+  
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <form action={handleSubmit}>
         <input
           type="text"
           name="message"
           placeholder="Type your message here..."
           className="border p-2 rounded text-gray-900"
+          onChange={(e) => setMessages(e.target.value)}
         />
         <button
-          type="submit"
+          onClick={handleSendMessage}
           className="mt-2 border p-2 rounded bg-blue-500 text-white"
         >
           Send
         </button>
-      </form>
     </main>
   );
 }

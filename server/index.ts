@@ -1,24 +1,36 @@
 import { createServer } from "http"
 import { Server } from "socket.io"
 
-const httpServer = createServer()
-
-const WS_PORT = 3500;
+const httpServer = createServer();
 
 const io = new Server(httpServer, {
   cors: {
-      origin: process.env.NODE_ENV === "production" ? false : ["http://localhost:3000", "http://127.0.0.1:3000"]
-  }
-})
+    origin: ["http://localhost:3000", "http://127.0.0.1:3000"], // Replace with your frontend URL
+    methods: ["GET", "POST"],
+    allowedHeaders: ["my-custom-header"],
+    credentials: true,
+  },
+});
 
-console.log(`Websocket server started on port ${WS_PORT}`);
+io.on("connection", (socket) => {
+  console.log("A user connected:", socket.id);
+  socket.on("join_room", (roomId) => {
+    socket.join(roomId);
+    console.log(`user with id-${socket.id} joined room - ${roomId}`);
+  });
 
-io.on('connection', (socket) => {
-  console.log(`User ${socket.id} connected`)
-  io.on('message', data => {
-    console.log(`Received: ${data}`);
-    io.emit(`server received message: ${data}`)
+  socket.on("message", (data) => {
+    console.log(data, "DATA");
+    //This will send a message to a specific room ID
+    socket.emit("message", data);
+  });
+
+  socket.on("disconnect", () => {
+    console.log("A user disconnected:", socket.id);
   });
 });
 
-httpServer.listen(WS_PORT, () => console.log(`listening on port ${WS_PORT}`))
+const PORT = process.env.PORT || 3001;
+httpServer.listen(PORT, () => {
+  console.log(`Socket.io server is running on port ${PORT}`);
+});
