@@ -5,24 +5,19 @@ const httpServer = createServer();
 
 const io = new Server(httpServer, {
   cors: {
-    origin: ["http://localhost:3000", "http://127.0.0.1:3000"], // Replace with your frontend URL
-    methods: ["GET", "POST"],
-    allowedHeaders: ["my-custom-header"],
-    credentials: true,
+    origin: ["http://localhost:3000", "http://127.0.0.1:3000"]
   },
 });
 
 io.on("connection", (socket) => {
   console.log("A user connected:", socket.id);
-  socket.on("join_room", (roomId) => {
-    socket.join(roomId);
-    console.log(`user with id-${socket.id} joined room - ${roomId}`);
-  });
-
+  // socket.join("123")
+  
   socket.on("message", (data) => {
-    console.log(data, "DATA");
-    //This will send a message to a specific room ID
-    socket.emit("message", data);
+    console.log(`From ${socket.id}: ${data}`);
+    // socket.to("123").emit("message", `From ${socket.id}: ${data}`);
+    socket.broadcast.emit('message', `From ${socket.id}: ${data}`) // sends to all except the sender
+    socket.emit('message', `From ${socket.id}: ${data}`)  // sends to the sender
   });
 
   socket.on("disconnect", () => {
