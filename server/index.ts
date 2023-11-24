@@ -3,13 +3,13 @@ import { Server } from "socket.io"
 
 const httpServer = createServer();
 
-// const io = new Server(httpServer, {
-//   cors: {
-//     origin: ["http://localhost:3000", "http://127.0.0.1:3000", "https://frontend-production-f529.up.railway.app"]
-//   },
-// });
+const io = new Server(httpServer, {
+  cors: {
+    origin: "*"
+  },
+});
 
-const io = new Server(httpServer);
+// const io = new Server(httpServer);
 
 io.on("connection", (socket) => {
   console.log("A user connected:", socket.id);
