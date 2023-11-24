@@ -1,9 +1,24 @@
-import { createServer } from "http"
 import { Server } from "socket.io"
+import { createServer } from "https";
 
-const httpServer = createServer();
+import { generateKeyPairSync } from 'crypto';
 
-const io = new Server(httpServer, {
+const { privateKey, publicKey } = generateKeyPairSync('rsa', {
+  modulusLength: 2048,
+});
+
+const httpsServer = createServer({
+  key: privateKey.export({
+    type: 'pkcs8',
+    format: 'pem',
+  }),
+  cert: publicKey.export({
+    type: 'spki',
+    format: 'pem',
+  })
+});
+
+const io = new Server(httpsServer, {
   cors: {
     origin: "*"
   },
@@ -28,6 +43,6 @@ io.on("connection", (socket) => {
 });
 
 const PORT = process.env.PORT || 8080;
-httpServer.listen(PORT, () => {
+httpsServer.listen(PORT, () => {
   console.log(`Socket.io server is running on port ${PORT}`);
 });
