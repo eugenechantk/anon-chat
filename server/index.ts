@@ -20,7 +20,9 @@ const httpsServer = createServer({
 
 const io = new Server(httpsServer, {
   cors: {
-    origin: "*"
+    origin: ["https://frontend-production-f529.up.railway.app", "https://localhost:3000", "https://127.0.0.1:3000"],
+    methods: ["GET", "POST"],
+    credentials: true
   },
 });
 
