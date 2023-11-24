@@ -18,20 +18,22 @@ export default function Home() {
   }, [])
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
+    <main className="relative p-24 h-full">
+      <div className="flex flex-row gap-1 w-full absolute bottom-8 left-1/2 transform -translate-x-1/2 px-24">
         <input
           type="text"
           name="message"
           placeholder="Type your message here..."
-          className="border p-2 rounded text-gray-900"
+          className="border p-2 rounded text-gray-900 grow"
           onChange={(e) => setMessages(e.target.value)}
         />
         <button
           onClick={handleSendMessage}
-          className="mt-2 border p-2 rounded bg-blue-500 text-white"
+          className="border p-2 rounded bg-blue-500 text-white"
         >
           Send
         </button>
+        </div>
     </main>
   );
 }
