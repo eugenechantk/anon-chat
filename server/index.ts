@@ -5,7 +5,7 @@ const httpServer = createServer();
 
 const io = new Server(httpServer, {
   cors: {
-    origin: ["http://localhost:3000", "http://127.0.0.1:3000"]
+    origin: ["http://localhost:3000", "http://127.0.0.1:3000", "https://frontend-production-f529.up.railway.app"]
   },
 });
 
