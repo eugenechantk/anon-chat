@@ -1,24 +1,14 @@
 import { Server } from "socket.io"
-import { createServer } from "https";
+import { createServer } from "http";
+// import { readFileSync } from 'fs';
 
-import { generateKeyPairSync } from 'crypto';
+// const privateKey = readFileSync('./key.pem');
+// const certificate = readFileSync('./cert.pem');
 
-const { privateKey, publicKey } = generateKeyPairSync('rsa', {
-  modulusLength: 2048,
-});
+// const credentials = { key: privateKey, cert: certificate };
+const httpServer = createServer();
 
-const httpsServer = createServer({
-  key: privateKey.export({
-    type: 'pkcs8',
-    format: 'pem',
-  }),
-  cert: publicKey.export({
-    type: 'spki',
-    format: 'pem',
-  })
-});
-
-const io = new Server(httpsServer, {
+const io = new Server(httpServer, {
   cors: {
     origin: ["https://frontend-production-f529.up.railway.app", "https://localhost:3000", "https://127.0.0.1:3000"],
     methods: ["GET", "POST"],
@@ -45,6 +35,6 @@ io.on("connection", (socket) => {
 });
 
 const PORT = process.env.PORT || 8080;
-httpsServer.listen(PORT, () => {
+httpServer.listen(PORT, () => {
   console.log(`Socket.io server is running on port ${PORT}`);
 });
