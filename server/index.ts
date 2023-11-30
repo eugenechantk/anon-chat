@@ -1,5 +1,6 @@
 import { Server } from "socket.io"
 import { createServer } from "http";
+import cors from "cors";
 // import { readFileSync } from 'fs';
 
 // const privateKey = readFileSync('./key.pem');
@@ -8,15 +9,15 @@ import { createServer } from "http";
 // const credentials = { key: privateKey, cert: certificate };
 const httpServer = createServer();
 
-const io = new Server(httpServer, {
-  cors: {
-    origin: ["https://frontend-production-f529.up.railway.app", "https://localhost:3000", "https://127.0.0.1:3000"],
-    methods: ["GET", "POST"],
-    credentials: true
-  },
-});
+const corsOptions = {
+  origin: ["http://localhost:3000", "https://frontend-production-f529.up.railway.app", "https://127.0.0.1:3000"],
+  methods: ["GET", "POST"],
+  // credentials: true
+};
 
-// const io = new Server(httpServer);
+const io = new Server(httpServer, {
+  cors: corsOptions
+});
 
 io.on("connection", (socket) => {
   console.log("A user connected:", socket.id);
