@@ -1,6 +1,5 @@
 import { Server } from "socket.io"
 import { createServer } from "http";
-import cors from "cors";
 // import { readFileSync } from 'fs';
 
 // const privateKey = readFileSync('./key.pem');
